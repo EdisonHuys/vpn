@@ -45,7 +45,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ steps.lowercase-owner.outputs.owner }}/edisonhu:latest
+            ghcr.io/${{ steps.lowercase-owner.outputs.owner }}/edisonhuys:latest
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.description=http server
