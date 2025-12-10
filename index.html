@@ -1,703 +1,722 @@
-      
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini 3 pro</title>
+    <title>Green Network - Protect Earth</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 全局样式 */
-        body { margin: 0; overflow: hidden; background-color: #000000; font-family: 'Times New Roman', serif; }
-        
-        /* Three.js画布容器 - 全屏显示 */
-        #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
-        
-        /* 用户界面覆盖层 - 极简设计 */
-        #ui-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; pointer-events: none;
-            display: flex; flex-direction: column; 
-            align-items: center;
-            padding-top: 40px;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-        }
-        
-        /* 隐藏元素类 */
-        .ui-hidden {
-            opacity: 0;
-            pointer-events: none !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* 加载动画 */
-        #loader {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 100;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease-out;
-        }
-        
-        /* 加载文本 */
-        .loader-text {
-            color: #d4af37; font-size: 14px; letter-spacing: 4px; margin-top: 20px;
-            text-transform: uppercase; font-weight: 100;
-        }
-        
-        /* 加载旋转器 */
-        .spinner {
-            width: 40px; height: 40px; border: 1px solid rgba(212, 175, 55, 0.2); 
-            border-top: 1px solid #d4af37; border-radius: 50%; 
-            animation: spin 1s linear infinite;
-        }
-        
-        /* 旋转动画 */
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* 标题样式 - 核心元素 */
-        h1 { 
-            color: #fceea7; font-size: 56px; margin: 0; font-weight: 400; 
-            letter-spacing: 6px; 
-            text-shadow: 0 0 50px rgba(252, 238, 167, 0.6); 
-            background: linear-gradient(to bottom, #fff, #eebb66);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-family: 'Cinzel', 'Times New Roman', serif;
-            opacity: 0.9;
-            transition: opacity 0.5s ease; /* 确保平滑过渡 */
+        :root {
+            --primary: #2e7d32;
+            --secondary: #4caf50;
+            --accent: #8bc34a;
+            --light: #e8f5e9;
+            --dark: #1b5e20;
+            --text: #333333;
+            --white: #ffffff;
         }
 
-        /* 上传按钮 - 优雅设计 */
-        .upload-wrapper {
-            margin-top: 20px;
-            pointer-events: auto;
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 80vh;
+            display: flex;
+            align-items: center;
             text-align: center;
-            transition: opacity 0.5s ease; /* 添加平滑隐藏过渡 */
+            color: var(--white);
         }
-        
-        /* 上传按钮样式 */
-        .upload-btn {
-            background: rgba(20, 20, 20, 0.6); 
-            border: 1px solid rgba(212, 175, 55, 0.4); 
-            color: #d4af37; 
-            padding: 10px 25px; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
-            font-size: 10px;
-            transition: all 0.4s;
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
             display: inline-block;
-            backdrop-filter: blur(5px);
-        }
-        
-        /* 上传按钮悬停效果 */
-        .upload-btn:hover { 
-            background: #d4af37; 
-            color: #000; 
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-        }
-        
-        /* 提示文本 */
-        .hint-text {
-            color: rgba(212, 175, 55, 0.5);
-            font-size: 9px;
-            margin-top: 8px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            background-color: var(--accent);
+            color: var(--white);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* 文件输入隐藏 */
-        #file-input { display: none; }
-
-        /* 网络摄像头反馈 */
-        #webcam-wrapper {
-            position: absolute; bottom: 40px; right: 40px;
-            width: 120px; height: 90px;
-            border: 1px solid rgba(255,255,255,0.1);
-            overflow: hidden; opacity: 0; /* 默认隐藏但功能可用 */
-            pointer-events: none;
+        .btn:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
-    </style>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
-    </style>
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
-                "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm"
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            color: var(--text);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-img {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-img img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .about-img:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem 1rem;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-item i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .stat-item h3 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            color: var(--text);
+        }
+
+        .initiatives {
+            background-color: var(--white);
+        }
+
+        .initiatives-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .initiative-card {
+            background-color: var(--light);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .initiative-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .initiative-img {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .initiative-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .initiative-card:hover .initiative-img img {
+            transform: scale(1.1);
+        }
+
+        .initiative-content {
+            padding: 1.5rem;
+        }
+
+        .initiative-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .initiative-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .cta {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: var(--white);
+            text-align: center;
+            padding: 5rem 0;
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta .btn {
+            background-color: var(--white);
+            color: var(--primary);
+        }
+
+        .cta .btn:hover {
+            background-color: var(--accent);
+            color: var(--white);
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+
+        .footer-column p {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links li a {
+            color: var(--light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links li a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 992px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .initiatives-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
-    </script>
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--primary);
+                flex-direction: column;
+                padding: 1rem 0;
+                text-align: center;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            nav ul.active {
+                display: flex;
+            }
+            
+            nav ul li {
+                margin: 0;
+                padding: 0.8rem 0;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .initiatives-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation for stats counter */
+        .counter {
+            transition: all 0.5s ease;
+        }
+    </style>
 </head>
 <body>
-
-    <!-- 加载动画 -->
-    <div id="loader">
-        <div class="spinner"></div>
-        <div class="loader-text">加载中...</div>
-    </div>
-
-    <!-- Three.js 3D渲染容器 -->
-    <div id="canvas-container"></div>
-
-    <!-- 用户界面层 -->
-    <div id="ui-layer">
-        <!-- <h1>圣诞快乐</h1> -->
-        
-        <!-- 照片上传控件 -->
-        <div class="upload-wrapper">
-            <label class="upload-btn">
-                添加回忆
-                <input type="file" id="file-input" multiple accept="image/*">
-            </label>
-            <div class="hint-text">按 'H' 隐藏控制</div>
+    <!-- Header -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span>Green Network</span>
+            </div>
+            <nav>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#initiatives">Initiatives</a></li>
+                    <li><a href="#get-involved">Get Involved</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
         </div>
-    </div>
+    </header>
 
-    <!-- 网络摄像头隐藏结构 -->
-    <div id="webcam-wrapper">
-        <video id="webcam" autoplay playsinline style="display:none;"></video>
-        <canvas id="webcam-preview"></canvas>
-    </div>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <h1>Protect Our Planet, Preserve Our Future</h1>
+            <p>Join the global movement to create a sustainable world through conservation, education, and community action.</p>
+            <a href="#get-involved" class="btn">Join Our Network</a>
+        </div>
+    </section>
 
-    <script type="module">
-        // 导入Three.js核心库
-        import * as THREE from 'three';
-        // 导入轨道控制器
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        // 导入后期处理效果
-        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-        // 导入房间环境贴图
-        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'; 
-        // 导入MediaPipe手部识别
-        import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Green Network</h2>
+                <p>We are a global community dedicated to environmental protection and sustainable development.</p>
+            </div>
+            <div class="about-content">
+                <div class="about-img">
+                    <img src="https://images.unsplash.com/photo-1507591064344-4c6ce005b128?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Team planting trees">
+                </div>
+                <div class="about-text">
+                    <h3>Our Mission</h3>
+                    <p>Green Network is committed to creating a sustainable future by protecting natural ecosystems, promoting renewable energy, and empowering communities to take environmental action.</p>
+                    <p>Founded in 2010, we've grown from a small grassroots organization to an international network with over 50,000 members across 120 countries.</p>
+                    <p>Our approach combines scientific research, community engagement, and policy advocacy to address the most pressing environmental challenges of our time.</p>
+                    <a href="#" class="btn">Learn More</a>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-tree"></i>
+                    <h3 class="counter" data-target="2500000">0</h3>
+                    <p>Trees Planted</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-users"></i>
+                    <h3 class="counter" data-target="50000">0</h3>
+                    <p>Active Members</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-globe-americas"></i>
+                    <h3 class="counter" data-target="120">0</h3>
+                    <p>Countries Reached</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-recycle"></i>
+                    <h3 class="counter" data-target="1500">0</h3>
+                    <p>Cleanup Projects</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        // --- 配置参数 ---
-        const CONFIG = {
-            colors: {
-                bg: 0x000000,                // 背景颜色
-                champagneGold: 0xffd966,      // 香槟金色
-                deepGreen: 0x03180a,          // 深绿色
-                accentRed: 0x990000,          // 强调红色
-            },
-            particles: {
-                count: 1500,                  // 粒子数量
-                dustCount: 2500,              // 灰尘粒子数量
-                treeHeight: 24,               // 树高
-                treeRadius: 8                 // 树半径
-            },
-            camera: {
-                z: 50                         // 相机初始Z轴位置
-            }
-        };
+    <!-- Initiatives Section -->
+    <section class="initiatives" id="initiatives">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Initiatives</h2>
+                <p>Discover the key programs and projects we're implementing to protect our planet.</p>
+            </div>
+            <div class="initiatives-grid">
+                <div class="initiative-card">
+                    <div class="initiative-img">
+                        <img src="https://dialogue.earth/content/uploads/2021/04/lessons-from-the-rush-to-reforest-china-dialogue-2400x1599.jpg" alt="Reforestation">
+                    </div>
+                    <div class="initiative-content">
+                        <h3>Global Reforestation</h3>
+                        <p>Planting millions of trees worldwide to restore ecosystems, combat climate change, and protect biodiversity.</p>
+                        <a href="#" class="btn">Learn More</a>
+                    </div>
+                </div>
+                <div class="initiative-card">
+                    <div class="initiative-img">
+                        <img src="https://images.unsplash.com/photo-1621451537084-482c73073a0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Ocean Conservation">
+                    </div>
+                    <div class="initiative-content">
+                        <h3>Ocean Conservation</h3>
+                        <p>Protecting marine ecosystems, reducing plastic pollution, and promoting sustainable fishing practices.</p>
+                        <a href="#" class="btn">Learn More</a>
+                    </div>
+                </div>
+                <div class="initiative-card">
+                    <div class="initiative-img">
+                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80" alt="Renewable Energy">
+                    </div>
+                    <div class="initiative-content">
+                        <h3>Renewable Energy</h3>
+                        <p>Promoting solar, wind, and other clean energy sources to reduce dependence on fossil fuels.</p>
+                        <a href="#" class="btn">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        // --- 状态管理 ---
-        const STATE = {
-            mode: 'TREE',                 // 当前模式：'TREE'树形, 'SCATTER'分散, 'FOCUS'聚焦
-            focusIndex: -1,               // 当前聚焦的索引
-            focusTarget: null,            // 当前聚焦的目标对象
-            hand: { detected: false, x: 0, y: 0 }, // 手部检测状态
-            rotation: { x: 0, y: 0 }      // 旋转状态
-        };
+    <!-- CTA Section -->
+    <section class="cta" id="get-involved">
+        <div class="container">
+            <h2>Join Our Global Movement</h2>
+            <p>Together, we can create a sustainable future for generations to come. Every action counts, no matter how small.</p>
+            <a href="#" class="btn">Become a Member</a>
+        </div>
+    </section>
 
-        // --- 全局变量 ---
-        // Three.js核心组件
-        let scene, camera, renderer, composer;
-        let mainGroup; 
-        let clock = new THREE.Clock();
-        let particleSystem = []; 
-        let photoMeshGroup = new THREE.Group();
-        let handLandmarker, video, webcamCanvas, webcamCtx;
-        let caneTexture; 
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Green Network</h3>
+                    <p>We are dedicated to protecting our planet through collaborative action, education, and sustainable solutions.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#initiatives">Initiatives</a></li>
+                        <li><a href="#get-involved">Get Involved</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Our Programs</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Reforestation</a></li>
+                        <li><a href="#">Ocean Cleanup</a></li>
+                        <li><a href="#">Wildlife Protection</a></li>
+                        <li><a href="#">Climate Education</a></li>
+                        <li><a href="#">Sustainable Agriculture</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Copper Creek Drive, New York</p>
+                    <p><i class="fas fa-phone"></i> +1 (312) 171-0771</p>
+                    <p><i class="fas fa-envelope"></i> support@greennetwork.org</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Green Network. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
-        // 初始化主函数
-        async function init() {
-            initThree();
-            setupEnvironment(); 
-            setupLights();
-            createTextures();
-            createParticles(); 
-            createDust();     
-            createDefaultPhotos();
-            setupPostProcessing();
-            setupEvents();
-            await initMediaPipe();
+    <script>
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('active');
+        });
+
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            const speed = 200; // The lower the slower
             
-            const loader = document.getElementById('loader');
-            loader.style.opacity = 0;
-            setTimeout(() => loader.remove(), 800);
-
-            animate();
-        }
-
-        // 初始化Three.js场景
-        function initThree() {
-            const container = document.getElementById('canvas-container');
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(CONFIG.colors.bg);
-            scene.fog = new THREE.FogExp2(CONFIG.colors.bg, 0.01); 
-
-            camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 2, CONFIG.camera.z); 
-
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.toneMapping = THREE.ReinhardToneMapping; 
-            renderer.toneMappingExposure = 2.2; 
-            container.appendChild(renderer.domElement);
-
-            mainGroup = new THREE.Group();
-            scene.add(mainGroup);
-        }
-
-        // 设置环境贴图
-        function setupEnvironment() {
-            const pmremGenerator = new THREE.PMREMGenerator(renderer);
-            scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
-        }
-
-        // 设置环境光和点光源
-        function setupLights() {
-            const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-            scene.add(ambient);
-
-            const innerLight = new THREE.PointLight(0xffaa00, 2, 20);
-            innerLight.position.set(0, 5, 0);
-            mainGroup.add(innerLight);
-
-            const spotGold = new THREE.SpotLight(0xffcc66, 1200);
-            spotGold.position.set(30, 40, 40);
-            spotGold.angle = 0.5;
-            spotGold.penumbra = 0.5;
-            scene.add(spotGold);
-
-            const spotBlue = new THREE.SpotLight(0x6688ff, 600);
-            spotBlue.position.set(-30, 20, -30);
-            scene.add(spotBlue);
-            
-            const fill = new THREE.DirectionalLight(0xffeebb, 0.8);
-            fill.position.set(0, 0, 50);
-            scene.add(fill);
-        }
-
-        // 设置后处理
-        function setupPostProcessing() {
-            const renderScene = new RenderPass(scene, camera);
-            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-            bloomPass.threshold = 0.7; 
-            bloomPass.strength = 0.45; 
-            bloomPass.radius = 0.4;
-
-            composer = new EffectComposer(renderer);
-            composer.addPass(renderScene);
-            composer.addPass(bloomPass);
-        }
-
-        // 创建纹理
-        function createTextures() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 128; canvas.height = 128;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0,0,128,128);
-            ctx.fillStyle = '#880000'; 
-            ctx.beginPath();
-            for(let i=-128; i<256; i+=32) {
-                ctx.moveTo(i, 0); ctx.lineTo(i+32, 128); ctx.lineTo(i+16, 128); ctx.lineTo(i-16, 0);
-            }
-            ctx.fill();
-            caneTexture = new THREE.CanvasTexture(canvas);
-            caneTexture.wrapS = THREE.RepeatWrapping;
-            caneTexture.wrapT = THREE.RepeatWrapping;
-            caneTexture.repeat.set(3, 3);
-        }
-
-        // 粒子类
-        class Particle {
-            constructor(mesh, type, isDust = false) {
-                this.mesh = mesh;
-                this.type = type;
-                this.isDust = isDust;
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
                 
-                this.posTree = new THREE.Vector3();
-                this.posScatter = new THREE.Vector3();
-                this.baseScale = mesh.scale.x; 
-
-                // Individual Spin Speed
-                // Photos spin slower to be readable
-                const speedMult = (type === 'PHOTO') ? 0.3 : 2.0;
-
-                this.spinSpeed = new THREE.Vector3(
-                    (Math.random() - 0.5) * speedMult,
-                    (Math.random() - 0.5) * speedMult,
-                    (Math.random() - 0.5) * speedMult
-                );
-
-                this.calculatePositions();
-            }
-
-            // 计算粒子位置
-            calculatePositions() {
-                // TREE: Tight Spiral
-                const h = CONFIG.particles.treeHeight;
-                const halfH = h / 2;
-                let t = Math.random(); 
-                t = Math.pow(t, 0.8); 
-                const y = (t * h) - halfH;
-                let rMax = CONFIG.particles.treeRadius * (1.0 - t); 
-                if (rMax < 0.5) rMax = 0.5;
-                const angle = t * 50 * Math.PI + Math.random() * Math.PI; 
-                const r = rMax * (0.8 + Math.random() * 0.4); 
-                this.posTree.set(Math.cos(angle) * r, y, Math.sin(angle) * r);
-
-                // SCATTER: 3D Sphere
-                let rScatter = this.isDust ? (12 + Math.random()*20) : (8 + Math.random()*12);
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.acos(2 * Math.random() - 1);
-                this.posScatter.set(
-                    rScatter * Math.sin(phi) * Math.cos(theta),
-                    rScatter * Math.sin(phi) * Math.sin(theta),
-                    rScatter * Math.cos(phi)
-                );
-            }
-
-            // 更新粒子位置和旋转
-            update(dt, mode, focusTargetMesh) {
-                let target = this.posTree;
+                const inc = target / speed;
                 
-                if (mode === 'SCATTER') target = this.posScatter;
-                else if (mode === 'FOCUS') {
-                    if (this.mesh === focusTargetMesh) {
-                        const desiredWorldPos = new THREE.Vector3(0, 2, 35);
-                        const invMatrix = new THREE.Matrix4().copy(mainGroup.matrixWorld).invert();
-                        target = desiredWorldPos.applyMatrix4(invMatrix);
-                    } else {
-                        target = this.posScatter;
-                    }
-                }
-
-                // 位置插值
-                const lerpSpeed = (mode === 'FOCUS' && this.mesh === focusTargetMesh) ? 5.0 : 2.0; 
-                this.mesh.position.lerp(target, lerpSpeed * dt);
-
-                // Rotation Logic - CRITICAL: Ensure spin happens in Scatter
-                if (mode === 'SCATTER') {
-                    this.mesh.rotation.x += this.spinSpeed.x * dt;
-                    this.mesh.rotation.y += this.spinSpeed.y * dt;
-                    this.mesh.rotation.z += this.spinSpeed.z * dt; // Added Z for more natural tumble
-                } else if (mode === 'TREE') {
-                    if (this.isDust) {
-                        // 灰尘粒子在TREE模式下的旋转效果
-                        this.mesh.rotation.x += this.spinSpeed.x * 0.5 * dt;
-                        this.mesh.rotation.y += this.spinSpeed.y * 0.5 * dt;
-                        this.mesh.rotation.z += this.spinSpeed.z * 0.5 * dt;
-                    } else {
-                        // 非灰尘粒子在TREE模式下的旋转逻辑
-                        this.mesh.rotation.x = THREE.MathUtils.lerp(this.mesh.rotation.x, 0, dt);
-                        this.mesh.rotation.z = THREE.MathUtils.lerp(this.mesh.rotation.z, 0, dt);
-                        this.mesh.rotation.y += 0.5 * dt; 
-                    }
-                }
-                
-                if (mode === 'FOCUS' && this.mesh === focusTargetMesh) {
-                    this.mesh.lookAt(camera.position); 
-                }
-
-                // Scale Logic
-                let s = this.baseScale;
-                if (this.isDust) {
-                    s = this.baseScale * (0.8 + 0.4 * Math.sin(clock.elapsedTime * 4 + this.mesh.id));
-                    if (mode === 'TREE') s = this.baseScale * (0.3 + 0.2 * Math.sin(clock.elapsedTime * 2 + this.mesh.id)); // 在TREE模式下保持可见
-                } else if (mode === 'SCATTER' && this.type === 'PHOTO') {
-                    // Large preview size in scatter
-                    s = this.baseScale * 2.5; 
-                } else if (mode === 'FOCUS') {
-                    if (this.mesh === focusTargetMesh) s = 4.5; 
-                    else s = this.baseScale * 0.8; 
-                }
-                
-                this.mesh.scale.lerp(new THREE.Vector3(s,s,s), 4*dt);
-            }
-        }
-
-        // 创建粒子系统
-        function createParticles() {
-            const sphereGeo = new THREE.SphereGeometry(0.5, 32, 32); 
-            const boxGeo = new THREE.BoxGeometry(0.55, 0.55, 0.55); 
-            const curve = new THREE.CatmullRomCurve3([
-                new THREE.Vector3(0, -0.5, 0), new THREE.Vector3(0, 0.3, 0),
-                new THREE.Vector3(0.1, 0.5, 0), new THREE.Vector3(0.3, 0.4, 0)
-            ]);
-            const candyGeo = new THREE.TubeGeometry(curve, 16, 0.08, 8, false);
-
-            const goldMat = new THREE.MeshStandardMaterial({
-                color: CONFIG.colors.champagneGold,
-                metalness: 1.0, roughness: 0.1,
-                envMapIntensity: 2.0, 
-                emissive: 0x443300,   
-                emissiveIntensity: 0.3
-            });
-
-            const greenMat = new THREE.MeshStandardMaterial({
-                color: CONFIG.colors.deepGreen,
-                metalness: 0.1, roughness: 0.7,
-                emissive: 0x003300,
-                emissiveIntensity: 0.3,
-                clearcoat: 0.5,
-                clearcoatRoughness: 0.3
-            });
-
-            const redMat = new THREE.MeshPhysicalMaterial({
-                color: CONFIG.colors.accentRed,
-                metalness: 0.3, roughness: 0.2, clearcoat: 1.0,
-                emissive: 0x330000
-            });
-            
-            const candyMat = new THREE.MeshStandardMaterial({ map: caneTexture, roughness: 0.4 });
-
-            for (let i = 0; i < CONFIG.particles.count; i++) {
-                const rand = Math.random();
-                let mesh, type;
-                
-                if (rand < 0.80) {
-                    mesh = new THREE.Mesh(boxGeo, greenMat);
-                    type = 'BOX';
-                } else if (rand < 0.85) {
-                    mesh = new THREE.Mesh(boxGeo, goldMat);
-                    type = 'GOLD_BOX';
-                } else if (rand < 0.90) {
-                    mesh = new THREE.Mesh(sphereGeo, goldMat);
-                    type = 'GOLD_SPHERE';
-                } else if (rand < 0.92) {
-                    mesh = new THREE.Mesh(sphereGeo, redMat);
-                    type = 'RED';
+                if(count < target) {
+                    counter.innerText = Math.ceil(count + inc);
+                    setTimeout(animateCounters, 1);
                 } else {
-                    mesh = new THREE.Mesh(candyGeo, candyMat);
-                    type = 'CANE';
+                    counter.innerText = target;
                 }
+            });
+        }
 
-                const s = 0.4 + Math.random() * 0.5;
-                mesh.scale.set(s,s,s);
-                mesh.rotation.set(Math.random()*6, Math.random()*6, Math.random()*6);
+        // Initialize counters when page loads
+        window.addEventListener('load', animateCounters);
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
                 
-                mainGroup.add(mesh);
-                particleSystem.push(new Particle(mesh, type, false));
-            }
-
-            const starGeo = new THREE.OctahedronGeometry(1.2, 0);
-            const starMat = new THREE.MeshStandardMaterial({
-                color: 0xffdd88, emissive: 0xffaa00, emissiveIntensity: 1.0,
-                metalness: 1.0, roughness: 0
-            });
-            const star = new THREE.Mesh(starGeo, starMat);
-            star.position.set(0, CONFIG.particles.treeHeight/2 + 1.2, 0);
-            mainGroup.add(star);
-            
-            mainGroup.add(photoMeshGroup);
-        }
-
-        // 创建灰尘粒子
-        function createDust() {
-            const geo = new THREE.TetrahedronGeometry(0.08, 0);
-            // 使用MeshPhongMaterial并调整属性以增强幻影效果
-            const mat = new THREE.MeshPhongMaterial({ 
-                color: 0xfffaa0, 
-                transparent: true, 
-                opacity: 0.5, 
-                emissive: 0xffd966, 
-                emissiveIntensity: 0.3,
-                shininess: 100
-            });
-            
-            for(let i=0; i<CONFIG.particles.dustCount; i++) {
-                 const mesh = new THREE.Mesh(geo, mat);
-                 mesh.scale.setScalar(0.5 + Math.random());
-                 mainGroup.add(mesh);
-                 particleSystem.push(new Particle(mesh, 'DUST', true));
-            }
-        }
-
-        // 创建默认图片
-        function createDefaultPhotos() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 512; canvas.height = 512;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#050505'; ctx.fillRect(0,0,512,512);
-            ctx.strokeStyle = '#eebb66'; ctx.lineWidth = 15; ctx.strokeRect(20,20,472,472);
-            ctx.font = '500 60px Times New Roman'; ctx.fillStyle = '#eebb66';
-            ctx.textAlign = 'center'; 
-            ctx.fillText("JOYEUX", 256, 230);
-            ctx.fillText("NOEL", 256, 300);
-            
-            const tex = new THREE.CanvasTexture(canvas);
-            tex.colorSpace = THREE.SRGBColorSpace;
-            addPhotoToScene(tex);
-        }
-
-        // 添加图片到场景
-        function addPhotoToScene(texture) {
-            const frameGeo = new THREE.BoxGeometry(1.4, 1.4, 0.05);
-            const frameMat = new THREE.MeshStandardMaterial({ color: CONFIG.colors.champagneGold, metalness: 1.0, roughness: 0.1 });
-            const frame = new THREE.Mesh(frameGeo, frameMat);
-
-            const photoGeo = new THREE.PlaneGeometry(1.2, 1.2);
-            const photoMat = new THREE.MeshBasicMaterial({ map: texture });
-            const photo = new THREE.Mesh(photoGeo, photoMat);
-            photo.position.z = 0.04;
-
-            const group = new THREE.Group();
-            group.add(frame);
-            group.add(photo);
-            
-            const s = 0.8;
-            group.scale.set(s,s,s);
-            
-            photoMeshGroup.add(group);
-            particleSystem.push(new Particle(group, 'PHOTO', false));
-        }
-        // 处理图片上传
-        function handleImageUpload(e) {
-            const files = e.target.files;
-            if(!files.length) return;
-            Array.from(files).forEach(f => {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    new THREE.TextureLoader().load(ev.target.result, (t) => {
-                        t.colorSpace = THREE.SRGBColorSpace;
-                        addPhotoToScene(t);
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
                     });
-                }
-                reader.readAsDataURL(f);
-            });
-        }
-
-        // 初始化手部识别模型
-        async function initMediaPipe() {
-            video = document.getElementById('webcam');
-            webcamCanvas = document.getElementById('webcam-preview');
-            webcamCtx = webcamCanvas.getContext('2d');
-            webcamCanvas.width = 160; webcamCanvas.height = 120;
-
-            // 初始化手部识别模型
-            const vision = await FilesetResolver.forVisionTasks(
-                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
-            );
-            // 初始化手部识别模型
-            handLandmarker = await HandLandmarker.createFromOptions(vision, {
-                baseOptions: {
-                    modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
-                    delegate: "GPU"
-                },
-                runningMode: "VIDEO",
-                numHands: 1
-            });
-            // 初始化视频流
-            if (navigator.mediaDevices?.getUserMedia) {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video.srcObject = stream;
-                video.addEventListener("loadeddata", predictWebcam);
-            }
-        }
-
-        // 处理视频帧
-        let lastVideoTime = -1;
-        async function predictWebcam() {
-            if (video.currentTime !== lastVideoTime) {
-                lastVideoTime = video.currentTime;
-                if (handLandmarker) {
-                    const result = handLandmarker.detectForVideo(video, performance.now());
-                    processGestures(result);
-                }
-            }
-            requestAnimationFrame(predictWebcam);
-        }
-
-        // 处理手势识别结果
-        function processGestures(result) {
-            if (result.landmarks && result.landmarks.length > 0) {
-                STATE.hand.detected = true;
-                const lm = result.landmarks[0];
-                STATE.hand.x = (lm[9].x - 0.5) * 2; 
-                STATE.hand.y = (lm[9].y - 0.5) * 2;
-
-                const thumb = lm[4]; const index = lm[8]; const wrist = lm[0];
-                const pinchDist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
-                const tips = [lm[8], lm[12], lm[16], lm[20]];
-                let avgDist = 0;
-                tips.forEach(t => avgDist += Math.hypot(t.x - wrist.x, t.y - wrist.y));
-                avgDist /= 4;
-
-                if (pinchDist < 0.05) {
-                    if (STATE.mode !== 'FOCUS') {
-                        STATE.mode = 'FOCUS';
-                        const photos = particleSystem.filter(p => p.type === 'PHOTO');
-                        if (photos.length) STATE.focusTarget = photos[Math.floor(Math.random()*photos.length)].mesh;
-                    }
-                } else if (avgDist < 0.25) {
-                    STATE.mode = 'TREE';
-                    STATE.focusTarget = null;
-                } else if (avgDist > 0.4) {
-                    STATE.mode = 'SCATTER';
-                    STATE.focusTarget = null;
-                }
-            } else {
-                STATE.hand.detected = false;
-            }
-        }
-
-        // 初始化事件监听
-        function setupEvents() {
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                composer.setSize(window.innerWidth, window.innerHeight);
-            });
-            document.getElementById('file-input').addEventListener('change', handleImageUpload);
-            
-            // Toggle UI logic - ONLY hide controls, keep title
-            window.addEventListener('keydown', (e) => {
-                if (e.key.toLowerCase() === 'h') {
-                    const controls = document.querySelector('.upload-wrapper');
-                    if (controls) controls.classList.toggle('ui-hidden');
+                    
+                    document.querySelector('nav ul').classList.remove('active');
                 }
             });
-        }
-
-        // 动画循环
-        function animate() {
-            requestAnimationFrame(animate);
-            const dt = clock.getDelta();
-
-            // Rotation Logic
-            if (STATE.mode === 'SCATTER' && STATE.hand.detected) {
-                const targetRotY = -STATE.hand.x * Math.PI * 0.9; 
-                const targetRotX = STATE.hand.y * Math.PI * 0.25;
-                STATE.rotation.y += (targetRotY - STATE.rotation.y) * 3.0 * dt;
-                STATE.rotation.x += (targetRotX - STATE.rotation.x) * 3.0 * dt;
-            } else {
-                if(STATE.mode === 'TREE') {
-                    STATE.rotation.y += 0.3 * dt;
-                    STATE.rotation.x += (0 - STATE.rotation.x) * 2.0 * dt;
-                } else {
-                     STATE.rotation.y += 0.1 * dt; 
-                }
-            }
-
-            mainGroup.rotation.y = STATE.rotation.y;
-            mainGroup.rotation.x = STATE.rotation.x;
-
-            particleSystem.forEach(p => p.update(dt, STATE.mode, STATE.focusTarget));
-            composer.render();
-        }
-
-        init();
+        });
     </script>
 </body>
-</html>
 
-    
+</html>
