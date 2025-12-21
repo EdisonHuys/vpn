@@ -1,741 +1,333 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>动物守护 - 保护小动物，守护美好家园</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        :root {
-            --primary: #e76f51;
-            --secondary: #2a9d8f;
-            --accent: #f4a261;
-            --dark: #264653;
-            --light: #f8f9fa;
-            --text: #2c3e50;
-            --white: #ffffff;
-        }
-
-        body {
-            background-color: var(--light);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        .logo i {
-            font-size: 2rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 2rem;
-        }
-
-        nav ul li a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0;
-            position: relative;
-        }
-
-        nav ul li a:hover {
-            color: var(--accent);
-        }
-
-        nav ul li a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--accent);
-            transition: width 0.3s ease;
-        }
-
-        nav ul li a:hover::after {
-            width: 100%;
-        }
-
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1504595403659-9088ce801e29?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 80vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: var(--white);
-        }
-
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--accent);
-            color: var(--white);
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            background-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        section {
-            padding: 5rem 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--accent);
-            border-radius: 2px;
-        }
-
-        .section-title p {
-            color: var(--text);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .about-img {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .about-img img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .about-img:hover img {
-            transform: scale(1.05);
-        }
-
-        .about-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
-        }
-
-        .about-text p {
-            margin-bottom: 1.5rem;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 2rem 1rem;
-            background-color: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-10px);
-        }
-
-        .stat-item i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .stat-item h3 {
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-item p {
-            color: var(--text);
-        }
-
-        .initiatives {
-            background-color: var(--white);
-        }
-
-        .initiatives-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-
-        .initiative-card {
-            background-color: var(--light);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .initiative-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .initiative-img {
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .initiative-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .initiative-card:hover .initiative-img img {
-            transform: scale(1.1);
-        }
-
-        .initiative-content {
-            padding: 1.5rem;
-        }
-
-        .initiative-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .initiative-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .cta {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            text-align: center;
-            padding: 5rem 0;
-        }
-
-        .cta h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta .btn {
-            background-color: var(--white);
-            color: var(--primary);
-        }
-
-        .cta .btn:hover {
-            background-color: var(--accent);
-            color: var(--white);
-        }
-
-        footer {
-            background-color: var(--dark);
-            color: var(--white);
-            padding: 3rem 0 1rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-column h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
-        }
-
-        .footer-column p {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-links li a {
-            color: var(--light);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links li a:hover {
-            color: var(--accent);
-            padding-left: 5px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: var(--white);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background-color: var(--accent);
-            transform: translateY(-5px);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .mobile-menu {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 992px) {
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .initiatives-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            nav ul {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: var(--primary);
-                flex-direction: column;
-                padding: 1rem 0;
-                text-align: center;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            }
-            
-            nav ul.active {
-                display: flex;
-            }
-            
-            nav ul li {
-                margin: 0;
-                padding: 0.8rem 0;
-            }
-            
-            .mobile-menu {
-                display: block;
-            }
-            
-            .initiatives-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animation for stats counter */
-        .counter {
-            transition: all 0.5s ease;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>我们的婚礼 | 邀请函</title>
+  <style>
+    /* --- 基础设置 --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "PingFang SC", "Microsoft YaHei", serif; background-color: #000; color: #fff; overflow: hidden; }
+
+    /* --- 全屏滚动容器 --- */
+    .h5-container { height: 100vh; width: 100vw; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+    /* --- 每一屏通用样式 --- */
+    section { height: 100vh; width: 100vw; scroll-snap-align: start; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; background-size: cover; background-position: center; text-align: center; }
+
+    /* 遮罩层 */
+    section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.2); z-index: 1; }
+    #text1::before { background: rgba(0, 0, 0, 0.0); }
+    #page1::before { background: rgba(0, 0, 0, 0.2); }
+
+    .content { position: relative; z-index: 2; width: 90%; padding: 20px; }
+
+    /* --- 动画类 --- */
+    .animate-up { opacity: 0; transform: translateY(50px); transition: all 1s ease-out; }
+    section.active .animate-up { opacity: 1; transform: translateY(0); }
+    .delay-1 { transition-delay: 0.2s; }
+    .delay-2 { transition-delay: 0.5s; }
+    .delay-3 { transition-delay: 0.8s; }
+
+    /* --- 字体 --- */
+    h1 { font-size: 2.8rem; font-family: 'Times New Roman', serif; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
+    h2 { font-size: 1.8rem; margin-bottom: 20px; color: #fce7cf; border-bottom: 1px solid rgba(255, 255, 255, 0.5); display: inline-block; padding-bottom: 10px; }
+    p { font-size: 1.1rem; line-height: 1.8; margin-bottom: 10px; letter-spacing: 1px; }
+
+    /* --- 底部箭头 --- */
+    .arrow-up { position: fixed; bottom: 20px; left: 50%; width: 30px; height: 30px; border-left: 2px solid #fff; border-top: 2px solid #fff; transform: translateX(-50%) rotate(45deg); animation: arrowMove 1.5s infinite; z-index: 10; }
+    @keyframes arrowMove { 0% { opacity: 0; bottom: 20px; } 50% { opacity: 1; bottom: 30px; } 100% { opacity: 0; bottom: 40px; } }
+
+    /* --- 音乐图标 --- */
+    .music-icon { position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0, 0, 0, 0.5) url('https://cdn-icons-png.flaticon.com/512/109/109197.png') no-repeat center center; background-size: 60%; border: 2px solid #fff; z-index: 999; animation: rotate 4s linear infinite; cursor: pointer; }
+    .music-paused { animation-play-state: paused; opacity: 0.7; }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* --- 相册滚动 --- */
+    .gallery-h-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 20px 0; width: 100%; scrollbar-width: none; }
+    .gallery-h-scroll::-webkit-scrollbar { display: none; }
+    .gallery-item { flex: 0 0 70%; height: 350px; border-radius: 8px; overflow: hidden; border: 2px solid #fff; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); scroll-snap-align: center; position: relative; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+    /* 添加放大镜提示图标 */
+    .gallery-item::after { content: ''; position: absolute; bottom: 10px; right: 10px; font-size: 1.2rem; opacity: 0.7; text-shadow: 0 1px 2px rgba(0,0,0,0.5); pointer-events: none; }
+
+    /* --- 图片放大查看器 (Lightbox) --- */
+    .lightbox {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.9); z-index: 10000;
+      display: none; /* 默认隐藏 */
+      justify-content: center; align-items: center;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease;
+    }
+    .lightbox img { max-width: 95%; max-height: 80%; border-radius: 5px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+    .lightbox p { margin-top: 15px; color: #ccc; font-size: 0.9rem; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- 背景图设置 --- */
+    #page1 { background-image: url('./images/00.jpg'); }
+    #text1 { background-color: #FFFFFF; color: #101010; padding: 20px; }
+    #page2 { background-image: url('./images/01.jpg'); }
+    #page3 { background-color: #FFFFFF; }
+    #page4 { background-image: url('./images/04.jpg'); }
+
+    /* 邀请函设计样式 */
+    .invitation-design { width: 100%; max-width: 600px; margin: 0 auto; position: relative; }
+    .invitation-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding: 0 20px; }
+    .invitation-header h3 { font-size: 1.5rem; color: #D4A373; font-weight: normal; }
+    .divider { width: 30%; height: 1px; background-color: #D4A373; }
+    .invitation-content { text-align: center; margin-bottom: 40px; }
+    .invitation-label { font-size: 1rem; color: #666; margin-bottom: 20px; }
+    .double-happiness { font-size: 4rem; color: #D4A373; margin-bottom: 20px; font-family: 'SimSun', serif; }
+    .invitation-title { font-size: 2rem; color: #D4A373; margin-bottom: 30px; letter-spacing: 0.3em; font-weight: normal; font-family: 'Times New Roman', serif; }
+    .invitation-text { font-size: 1.1rem; color: #333; line-height: 1.8; margin-bottom: 40px; padding: 0 20px; }
+    .invitation-text p { margin-bottom: 10px; }
+  </style>
 </head>
+
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container nav-container">
-            <div class="logo">
-                <i class="fas fa-paw"></i>
-                <span>动物守护</span>
-            </div>
-            <nav>
-                <div class="mobile-menu">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <ul>
-                    <li><a href="#home">首页</a></li>
-                    <li><a href="#about">关于我们</a></li>
-                    <li><a href="#initiatives">守护项目</a></li>
-                    <li><a href="#get-involved">加入我们</a></li>
-                    <li><a href="#contact">联系我们</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.pexels.com/photos/6137167/pexels-photo-6137167.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');">
-        <div class="container hero-content">
-            <h1>守护小动物，共建美好家园</h1>
-            <p>加入动物守护，通过保护行动、教育宣传和社区参与，共同守护地球上的珍贵生命。</p>
-            <a href="#get-involved" class="btn">加入守护</a>
-        </div>
+  <audio id="bgm" loop preload="auto">
+    <source src="./MP3/geinimen.mp3" type="audio/mpeg">
+  </audio>
+  <div class="music-icon" id="musicBtn"></div>
+  <div class="arrow-up"></div>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="放大图片">
+    <p>点击任意处关闭</p>
+  </div>
+
+  <div class="h5-container">
+    <section id="page1" class="active">
+      <div class="content" style="margin-top: 300px;">
+        <p class="animate-up">The Wedding Of</p>
+        <h1 class="animate-up delay-1">赵政 & 陈莹莹</h1>
+        <p class="animate-up delay-2">一定是特别的缘分</p>
+        <p class="animate-up delay-2">才可以一路走来变成了一家人</p>
+      </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about">
-        <div class="container">
-            <div class="section-title">
-                <h2>关于动物守护</h2>
-                <p>我们是一个致力于保护小动物、维护生物多样性的爱心社区。</p>
+    <section id="text1">
+      <div class="content">
+        <div class="invitation-design">
+          <div class="invitation-header">
+            <h3>相爱</h3>
+            <div class="divider"></div>
+            <h3>相守</h3>
+          </div>
+          <div class="invitation-content">
+            <p class="invitation-label">{诚挚邀请}</p>
+            <div class="double-happiness">囍</div>
+            <h2 class="invitation-title">INVITATION</h2>
+            <div class="invitation-text">
+              <p>我们一起起始这段旅程</p>
+              <p>两颗心跳动如一</p>
+              <p>我们面对前方的路</p>
+              <p>以爱作为我们的指南</p>
+              <br>
+              <p>我们可能会跌倒，可能会摔倒</p>
+              <p>但我们会站起来，</p>
+              <p>继续前行因为这段旅程值得我们付出</p>
+              <br>
+              <p>当我们在一起，手牵着手</p>
             </div>
-            <div class="about-content">
-                <div class="about-img">
-                    <img src="https://images.pexels.com/photos/6137167/pexels-photo-6137167.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="动物守护团队在行动">
-                </div>
-                <div class="about-text">
-                    <h3>我们的愿景</h3>
-                    <p>动物守护致力于创造一个人类与动物和谐共存的世界，让每一个生命都能在安全、健康的环境中茁壮成长。</p>
-                    <p>自2012年成立以来，我们从一个小型爱心团体发展成为拥有超过75,000名成员、覆盖全球150个国家的保护网络。</p>
-                    <p>我们通过实地救助、科学研究、教育宣传和政策倡导，致力于保护濒危物种、改善动物生存环境、提升公众保护意识。</p>
-                    <a href="#" class="btn">我们的故事</a>
-                </div>
-            </div>
-            <div class="stats">
-                <div class="stat-item">
-                    <i class="fas fa-paw"></i>
-                    <h3 class="counter" data-target="3200">0</h3>
-                    <p>小动物救助</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <h3 class="counter" data-target="75000">0</h3>
-                    <p>爱心成员</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-globe"></i>
-                    <h3 class="counter" data-target="150">0</h3>
-                    <p>覆盖国家</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-home"></i>
-                    <h3 class="counter" data-target="210">0</h3>
-                    <p>动物栖息地保护</p>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- Initiatives Section -->
-    <section class="initiatives" id="initiatives">
-        <div class="container">
-            <div class="section-title">
-                <h2>守护项目</h2>
-                <p>探索我们专注于保护小动物和维护生物多样性的倡议项目。</p>
-            </div>
-            <div class="initiatives-grid">
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.pexels.com/photos/4588072/pexels-photo-4588072.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="野生动物救助">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>野生动物救助计划</h3>
-                        <p>为受伤、迷路或受到威胁的野生动物提供救援、治疗和康复服务，帮助它们重返自然栖息地。</p>
-                        <a href="#" class="btn">了解更多</a>
-                    </div>
-                </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.pexels.com/photos/4587968/pexels-photo-4587968.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="栖息地保护">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>栖息地保护项目</h3>
-                        <p>保护和恢复濒危动物的自然栖息地，建立生态保护区，确保小动物有安全的家园。</p>
-                        <a href="#" class="btn">了解更多</a>
-                    </div>
-                </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.pexels.com/photos/4588026/pexels-photo-4588026.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="保护教育">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>保护教育计划</h3>
-                        <p>通过学校课程、社区讲座和公众宣传活动，提高人们对小动物保护的认识和意识。</p>
-                        <a href="#" class="btn">了解更多</a>
-                    </div>
-                </div>
-            </div>
+    <section id="page2"></section>
+
+    <section id="page3">
+      <div class="content">
+        <h2 class="animate-up">甜蜜瞬间</h2>
+        <div class="gallery-h-scroll animate-up delay-1" id="galleryContainer">
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/1.jpg"></div>
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/224bbfad474731841f04dfabed3a5704.jpg"></div>
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/2031425bd48ed424df58e956f80f0e70.jpg"></div>
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/6d8b2d162372b88cd973ed6f09a5320a.jpg"></div>
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/6f66398a8dddad349f1024c779ac9fe0.jpg"></div>
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/3a3cec09129bf29b0263bb56b11f859a.jpg"></div>
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/9d1bfd73f77080e7a11662e3e9ac3752.jpg"></div>
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/3608b13abc72e98b263d16dedaeb0514.jpg"></div>
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/7f7e624e4d2c6d0351cab37da63d2874.jpg"></div>
+          <div class="gallery-item" onclick="showLightbox(this.querySelector('img').src)"><img src="./images/a8dc636601c846e2f3c1b2cca2e0f64d.jpg"></div>
         </div>
+      </div>
     </section>
 
-    <!-- Get Involved Section -->
-    <section id="get-involved">
-        <div class="container">
-            <div class="section-title">
-                <h2>加入我们</h2>
-                <p>有很多方式可以参与我们的使命，为保护小动物和维护生物多样性贡献力量。</p>
-            </div>
-            <div class="involve-content">
-                <div class="involve-grid">
-                    <div class="involve-item">
-                        <div class="involve-icon">
-                            <i class="fas fa-hands-helping"></i>
-                        </div>
-                        <h3>成为志愿者</h3>
-                        <p>加入我们的志愿者网络，参与当地和全球的动物保护项目，直接参与救助和保护工作。</p>
-                        <a href="#" class="btn">立即报名</a>
-                    </div>
-                    <div class="involve-item">
-                        <div class="involve-icon">
-                            <i class="fas fa-donate"></i>
-                        </div>
-                        <h3>爱心捐赠</h3>
-                        <p>您的资金支持将帮助我们继续开展重要的动物保护工作，包括救助、治疗和栖息地保护。</p>
-                        <a href="#" class="btn">立即捐赠</a>
-                    </div>
-                    <div class="involve-item">
-                        <div class="involve-icon">
-                            <i class="fas fa-user-graduate"></i>
-                        </div>
-                        <h3>宣传教育</h3>
-                        <p>学习动物保护知识，并在您的社区分享这些知识，提高更多人的保护意识。</p>
-                        <a href="#" class="btn">了解更多</a>
-                    </div>
-                </div>
-                <div class="involve-cta">
-                    <h3>准备好为保护小动物贡献力量了吗？</h3>
-                    <p>立即加入动物守护，成为保护小动物和维护生物多样性的一份子。</p>
-                    <a href="#" class="btn btn-primary">立即加入</a>
-                </div>
-            </div>
+    <section id="page4">
+      <div class="content">
+        <h2 class="animate-up">敬备喜酌</h2>
+        <div class="animate-up delay-1"
+          style="background:rgba(255,255,255,0.2); color:#333; padding:20px; border-radius:10px; margin-top:300px;">
+          <p style="font-size: 1.3rem; font-weight: bold; margin: 20px 0;">·喜宴时间·</p>
+          <p style="margin-bottom: 5px;">2026年2月11日 星期三</p>
+          <p style="margin-bottom: 20px;">农历腊月廿四 14:00</p>
+          <p style="font-size: 1.3rem; font-weight: bold; margin: 20px 0;">·喜宴席设·</p>
+          <p style="margin-bottom: 10px;">丁司垱镇路庙铺村赵家冲2组</p>
+          <a href="javascript:void(0);" onclick="startNavigation()"
+            style="display:block; background:#d4a373; color:white; text-decoration:none; padding:12px; border-radius:5px; margin-top:15px; text-align:center; font-weight:bold; font-size:16px; cursor: pointer;">
+            一键导航 
+          </a>
         </div>
+      </div>
     </section>
+  </div>
 
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>动物守护</h3>
-                    <p>我们致力于通过协作行动、教育宣传和可持续解决方案，保护地球上的小动物和生物多样性。</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3>快速链接</h3>
-                    <ul class="footer-links">
-                        <li><a href="#home">首页</a></li>
-                        <li><a href="#about">关于我们</a></li>
-                        <li><a href="#initiatives">守护项目</a></li>
-                        <li><a href="#get-involved">加入我们</a></li>
-                        <li><a href="#contact">联系我们</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>关注领域</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">野生动物救助</a></li>
-                        <li><a href="#">栖息地保护</a></li>
-                        <li><a href="#">动物福利</a></li>
-                        <li><a href="#">保护教育</a></li>
-                        <li><a href="#">政策倡导</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>联系我们</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> 爱心大道123号，动物守护中心</p>
-                    <p><i class="fas fa-phone"></i> +86 (10) 8888-1234</p>
-                    <p><i class="fas fa-envelope"></i> info@animalguard.org</p>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 动物守护. 保留所有权利.</p>
-            </div>
-        </div>
-    </footer>
+  <script>
+    // --- 1. 变量定义 ---
+    const bgm = document.getElementById('bgm');
+    const musicBtn = document.getElementById('musicBtn');
+    let isPlaying = false;
+    let hasInitialized = false;
 
-    <script>
-        // Mobile menu toggle
-        document.querySelector('.mobile-menu').addEventListener('click', function() {
-            document.querySelector('nav ul').classList.toggle('active');
+    // --- 2. 音乐播放逻辑 ---
+    function tryPlayMusic() {
+      if (hasInitialized) return;
+      bgm.currentTime = 16;
+      const playPromise = bgm.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          isPlaying = true;
+          hasInitialized = true;
+          musicBtn.classList.remove('music-paused');
+          document.removeEventListener('touchstart', tryPlayMusic);
+          document.removeEventListener('click', tryPlayMusic);
+        }).catch(error => {
+          isPlaying = false;
+          musicBtn.classList.add('music-paused');
         });
+      }
+    }
 
-        // Stats counter animation
-        document.addEventListener('DOMContentLoaded', function() {
-            const counters = document.querySelectorAll('.counter');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const target = parseInt(entry.target.getAttribute('data-target'));
-                        const duration = 2000;
-                        const step = target / (duration / 16);
-                        let current = 0;
-                        
-                        const timer = setInterval(() => {
-                            current += step;
-                            if (current >= target) {
-                                entry.target.textContent = target.toLocaleString();
-                                clearInterval(timer);
-                            } else {
-                                entry.target.textContent = Math.floor(current).toLocaleString();
-                            }
-                        }, 16);
-                        
-                        observer.unobserve(entry.target);
-                    }
-                });
+    function initWeChatAudio() {
+        if (typeof WeixinJSBridge == "object" && typeof WeixinJSBridge.invoke == "function") {
+            WeixinJSBridge.invoke('getNetworkType', {}, function (res) {
+                bgm.load(); 
+                setTimeout(tryPlayMusic, 500);
             });
-            
-            counters.forEach(counter => observer.observe(counter));
-        });
-    </script>
+        } else {
+             document.addEventListener("WeixinJSBridgeReady", function () {
+                bgm.load();
+                setTimeout(tryPlayMusic, 500);
+             }, false);
+        }
+    }
+    initWeChatAudio();
+    document.addEventListener('DOMContentLoaded', () => { setTimeout(tryPlayMusic, 500); });
+    document.addEventListener('touchstart', tryPlayMusic, { once: true });
+    document.addEventListener('click', tryPlayMusic, { once: true });
+
+    musicBtn.addEventListener('click', function (e) {
+      e.stopPropagation(); 
+      if (isPlaying) {
+        bgm.pause();
+        musicBtn.classList.add('music-paused');
+      } else {
+        if (!hasInitialized) { bgm.currentTime = 16; hasInitialized = true; }
+        bgm.play();
+        musicBtn.classList.remove('music-paused');
+      }
+      isPlaying = !isPlaying;
+    });
+
+    // --- 3. 导航逻辑 ---
+    function startNavigation() {
+      var destinationName = "丁司垱镇路庙铺村赵家冲2组";
+      var lat = 30.34;
+      var lng = 115.31;
+      var u = navigator.userAgent;
+      var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+
+      if (isiOS) {
+        window.location.href = "http://maps.apple.com/?daddr=" + encodeURIComponent(destinationName) + "&ll=" + lat + "," + lng + "&dirflg=d";
+      } else {
+        var gaodeUrl = "https://uri.amap.com/marker?position=" + lng + "," + lat + "&name=" + encodeURIComponent(destinationName) + "&src=wedding&coordinate=gaode&callnative=1";
+        window.location.href = gaodeUrl;
+      }
+    }
+
+    // --- 4. 相册自动滚动与点击放大功能 ---
+    
+    // 自动滚动控制变量
+    let scrollInterval = null;
+    const galleryContainer = document.getElementById('galleryContainer');
+
+    // 开启自动滚动
+    function startAutoScroll() {
+        if (scrollInterval) return; 
+        scrollInterval = setInterval(() => {
+            if (galleryContainer) {
+                if (galleryContainer.scrollLeft >= (galleryContainer.scrollWidth - galleryContainer.clientWidth)) {
+                     stopAutoScroll(); 
+                } else {
+                    galleryContainer.scrollLeft += 1;
+                }
+            }
+        }, 25);
+    }
+
+    // 停止自动滚动
+    function stopAutoScroll() {
+        if (scrollInterval) {
+            clearInterval(scrollInterval);
+            scrollInterval = null;
+        }
+    }
+
+    // 放大图片 (Lightbox)
+    function showLightbox(src) {
+        // 打开大图时，先停止背景滚动
+        stopAutoScroll(); 
+        
+        const lightbox = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-img');
+        img.src = src;
+        lightbox.style.display = 'flex';
+    }
+
+    // 关闭图片 (修复点：关闭后恢复滚动)
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+        
+        // 关键修复：关闭大图后，重新启动自动滚动
+        startAutoScroll();
+    }
+
+    // 用户手动触摸时停止滚动
+    if(galleryContainer) {
+        galleryContainer.addEventListener('touchstart', stopAutoScroll);
+        galleryContainer.addEventListener('mousedown', stopAutoScroll);
+    }
+
+
+    // --- 5. 页面滚动监听 ---
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          
+          if (entry.target.id === 'page3') {
+              setTimeout(startAutoScroll, 800);
+          } else {
+              stopAutoScroll();
+          }
+
+          if (entry.target.id === 'page4') {
+            document.querySelector('.arrow-up').style.display = 'none';
+          } else {
+            document.querySelector('.arrow-up').style.display = 'block';
+          }
+        } else {
+          entry.target.classList.remove('active');
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('section').forEach(section => observer.observe(section));
+  </script>
 </body>
 </html>
